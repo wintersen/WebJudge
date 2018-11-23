@@ -21,26 +21,31 @@
 
 <body>
     <div class="container-fluid">
-        <div class="jumbotron jumbotron-fluid" style="background-image: url('images/banner.jpg'); color: white; text-align: center">
-            Welcome to WebJudge
-        </div>
-        <div class="container">
-            <div class="row">
-                Welcome to WebJudge, an online tool students can use to judge their fellow classmates' Web Design
-                projects! Log in, view, and rate web pages as a student, or register classes and upload source
-                materials as an instructor.
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2">
+                    <div class="jumbotron jumbotron-fluid" style="background-image: url('images/banner.jpg'); color: white; text-align: center">
+                        Welcome to WebJudge
+                    </div>
+                    <div class="container">
+                        <div class="row mb-5">
+                            Welcome to WebJudge, an online tool students can use to judge their fellow classmates' Web Design
+                            projects! Log in, view, and rate web pages as a student, or register classes and upload source
+                            materials as an instructor.
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 offset-md-2">
+                                <button class="btn btn-block" type="button" data-toggle="modal" data-target="#loginModal">Log In</button>
+                            </div>
+                            <div class="col-md-3 offset-md-2">
+                                <button class="btn btn-block" type="button" data-toggle="modal" data-target="#registerModal">Register
+                                    as Instructor</button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="main.html">To main page</a>
             </div>
-            <div class="row">
-                <div class="col-md-3 offset-md-2">
-                    <button class="btn btn-block" type="button" data-toggle="modal" data-target="#loginModal">Log In</button>
-                </div>
-                <div class="col-md-3 offset-md-1">
-                    <button class="btn btn-block" type="button" data-toggle="modal" data-target="#registerModal">Register
-                        as Instructor</button>
-                </div>
-            </div>
         </div>
-        <a href="main.html">To main page</a>
+        
     </div>
 
     <!-- REGISTER MODAL -->

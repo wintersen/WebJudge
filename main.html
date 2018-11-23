@@ -20,23 +20,32 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Main Portal</h1>
-        General Features
-        <ul>
-            <li>logout</li>
-            <li>view websites</li>
-        </ul>
-        Teacher Features
-        <ul>
-            <li>upload student csv</li>
-            <li>upload website zip</li>
-            <li>download/view student responses</li>
-        </ul>
-        Student Features
-        <ul>
-            <li>vote on websites</li>
-        </ul>
+    <div class="container-fluid">
+        <nav class="navbar sticky-top navbar-light bg-light">
+            <a class="navbar-brand" href="#">WebJudge</a>
+            <form class="form-inline">
+                <button class="btn btn-outline-success" type="button">Log Out</button>
+            </form>
+        </nav>
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                    <h1 class="display-4">Welcome, {{student/ta/instructor}}!</h1>
+                    <p class="lead pl-5">What would you like to do today?</p>
+            
+            
+                    <ul id="instructorFeatures">
+                        <li><a>Upload Class</a> - Upload your students and TAs as a CSV file</li>
+                    </ul>
+                    <ul id="taFeatures">
+                        <li><a>Upload Websites</a> - Upload a ZIP containing the resources for student websites</li>
+                        <li><a>View Student Voting</a> - View and download the report of voting results</li>
+                    </ul>
+                    <ul id="generalFeatures">
+                        <li><a>Vote</a> - View classmate submissions and pick your top 3 websites</li>
+                    </ul>
+            </div>
+        </div>
+        
     </div>
 </body>
 
