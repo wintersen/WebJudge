@@ -65,6 +65,5 @@ def create_db()
     qry = "INSERT INTO roles (user, role) VALUES ('" + row[0] + "', '" + row[2] + "')"
     results = db.query(qry)
     print(results)
-
   end
 end
