@@ -19,6 +19,28 @@ get '/main.html' do
   File.read(File.join('main.html'))
 end
 
+get '/vote.html' do
+  File.read(File.join('vote.html'))
+end
+
+post '/uploadVote' do
+  studentId = params[:id]
+  first = params[:first]
+  second = params[:second]
+  third = params[:third]
+
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
+  if(in_db('votes', 'user', studentId, mysql))
+    # student has already voted
+    # do nothing
+  else
+    # insert result into db
+    qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
+    results = mysql.query(qry)
+    print(results)
+  end
+end
+
 not_found do
   '404 NOT FOUND'
 end
@@ -26,7 +48,7 @@ end
 
 def connect_sql()
   print("")
-  #db = Mysql2.connect('localhost', 'marcos', 'H@ha12345', 'db1')
+  db = Mysql2.connect('localhost', 'marcos', 'H@ha12345', 'db1')
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
   results = mysql.query("SELECT * FROM userpass")
   results.each do |row|

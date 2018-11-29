@@ -1,2 +1,5 @@
 gem 'mysql2'
 gem 'sinatra'
+gem 'dm-core'
+gem 'dm-migrations'
+gem 'sinatra/reloader'
