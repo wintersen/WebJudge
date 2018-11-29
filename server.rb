@@ -32,8 +32,6 @@ def connect_sql()
   results.each do |row|
     print("\n"+(row.to_s))
   end
-  '\nSuccess\n'
-  print(in_db("userpass", "user", "Marcos Serrano", mysql))
 
 end
 
@@ -54,17 +52,7 @@ def create_db()
 
   #Read csv for data to fill the dbs
   CSV.foreach("information.csv") do |row|
-
-    qry = "SELECT EXISTS (SELECT * FROM userpass WHERE user = '" + row[0] +"')"
-    results = db.query(qry)
-    exists = false
-    results.each do |row|
-      print("\n" + (row.to_s) +"\n")
-      if row.to_s.include? "=>1"
-        exists = true
-      end
-    end
-    if exists == true
+    if in_db("userpass", "user", row[0], db)
       print("\nCONTINUING\n")
       next
     end
@@ -77,11 +65,5 @@ def create_db()
     qry = "INSERT INTO roles (user, role) VALUES ('" + row[0] + "', '" + row[2] + "')"
     results = db.query(qry)
     print(results)
-
-    if row[2] == 'instructor'
-      print('instructor')
-    else
-      print('student')
-    end
   end
 end
