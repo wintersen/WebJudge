@@ -32,7 +32,7 @@ post '/uploadVote' do
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
   if(in_db('votes', 'user', studentId, mysql))
     # student has already voted
-    # do nothing
+    File.read(File.join('voteRepeat.html'))
   else
     # insert result into db
     qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
