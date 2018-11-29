@@ -6,6 +6,7 @@ require 'sinatra/reloader' if development?
 # #mysql 5.7 from official wesite
 # #connection succeeded
 # #NOTE IF TESTING, REPLACE WITH YOUR OWN USER/PASS/INFO
+
 get '/' do
   File.read(File.join('index.html'))
 
@@ -32,8 +33,20 @@ def connect_sql()
     print("\n"+(row.to_s))
   end
   '\nSuccess\n'
+  print(in_db("userpass", "user", "Marcos Serrano", mysql))
+
 end
 
+def in_db(table, column, value, connection)
+  qry = "SELECT EXISTS (SELECT * FROM "+table+" WHERE "+column+" = '" + value +"')"
+  results = connection.query(qry)
+  results.each do |row|
+    if row.to_s.include? "=>1"
+      return true
+    end
+  end
+  return false
+end
 
 def create_db()
   #connect to db first
