@@ -2,6 +2,8 @@ require 'sinatra'
 require 'mysql2'
 require 'csv'
 require 'sinatra/reloader' if development?
+require 'digest'
+require 'securerandom'
 # password to sql marcoserika
 # #mysql 5.7 from official wesite
 # #connection succeeded
@@ -47,8 +49,6 @@ end
 
 
 def connect_sql()
-  print("")
-  db = Mysql2.connect('localhost', 'marcos', 'H@ha12345', 'db1')
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
   results = mysql.query("SELECT * FROM userpass")
   results.each do |row|
@@ -79,7 +79,8 @@ def create_db()
       next
     end
     #updating usernames and passwords table
-    qry = "INSERT INTO userpass (user, pass) VALUES ('" + row[0] + "', '" + row[1] + "')"
+    pw, salt = get_hash(row[1])
+    qry = "INSERT INTO userpass (user, pass) VALUES ('" + row[0] + "', '" + pw + "')"
     results = db.query(qry)
     print(results)
 
@@ -88,4 +89,11 @@ def create_db()
     results = db.query(qry)
     print(results)
   end
+end
+
+def get_hash(password)
+  #Credit to owasp website hashing guide
+  salt = SecureRandom.hex
+  hashed_pw = Digest::SHA256.hexdigest (password+salt)
+  return hashed_pw, salt
 end
