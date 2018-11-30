@@ -111,6 +111,58 @@ post '/uploadCsv' do
   #call function to handle csv here with csvdata
 end
 
+
+post "/login" do
+  #make sure username and password provided
+  if !(params.has_key?(:username))
+    return "NO USERNAME PROVIDED"
+  end
+  if !(params.has_key?(:password))
+    return "NO PASSWORD PROVIDED"
+  end
+  #check if username is even in database
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+  if(!in_db("salts", "user", params[:username], mysql))
+    return "USER NOT FOUND"
+  end
+
+  #Getting Salt
+  saltquery = "SELECT salt from salts WHERE user = \"" + params[:username] + "\";"
+  results = mysql.query(saltquery)
+  strResult = get_query(results)
+
+  salt = (query_splitter(strResult))
+
+  #generating password hash
+  hashed_pw = Digest::SHA256.hexdigest (params[:password]+salt)
+
+  #getting hash for comparison
+  passwordquery = "SELECT pass from userpass WHERE user = \"" + params[:username] + "\";"
+  results = mysql.query(passwordquery)
+  strResult = query_splitter(get_query(results))
+
+  #Performing comparison with password
+  if hashed_pw == strResult
+    return "LOGGED IN"
+  else
+    return "INCORRECT PASSWORD"
+  end
+end
+
+#function takes query results as string, and returns only value you want
+def query_splitter(str)
+  return str.split('"')[3]
+end
+
+#Takes results of query, and returns it in string form for query splitter
+def get_query(results)
+  strResult = ""
+  results.each do |row|
+    strResult = row.to_s
+  end
+  return strResult
+end
+
 not_found do
   '404 NOT FOUND'
 end
@@ -149,6 +201,11 @@ def create_db()
     #updating usernames and passwords table
     pw, salt = get_hash(row[1])
     qry = "INSERT INTO userpass (user, pass) VALUES ('" + row[0] + "', '" + pw + "')"
+    results = db.query(qry)
+    print(results)
+
+    #Updating salts
+    qry = "INSERT INTO salts (user, salt) VALUES ('" + row[0] + "', '" + salt + "')"
     results = db.query(qry)
     print(results)
 
