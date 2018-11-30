@@ -40,6 +40,8 @@ post '/uploadVote' do
   second = params[:second]
   third = params[:third]
 
+  studentId = 'test'
+
   # student has already voted
   if(in_db('votes', 'user', studentId, mysql))
     File.read(File.join('voteRepeat.html'))
@@ -54,15 +56,24 @@ post '/uploadVote' do
         print(results)
         File.read(File.join('voteSuccess.html'))
       else
+        print "failed on 3"
         File.read(File.join('voteFail.html'))
       end
     else
+      print "failed on 2"
       File.read(File.join('voteFail.html'))
     end
   else
-    File.read(File.join('voteFail.html'))
+    print "failed on 1"
+    #File.read(File.join('voteFail.html'))
   end
-
+  # TEST----------
+  # This is just for ensuring it puts into database
+  qry = "INSERT INTO votes (user, vote1, vote2, vote3) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
+  results = mysql.query(qry)
+  print(results)
+  File.read(File.join('voteSuccess.html'))
+    # -----------------
   end
 end
 
