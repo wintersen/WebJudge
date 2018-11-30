@@ -95,18 +95,20 @@
                     <p>
                         Upload a ZIP containing the websites to be judged.
                     </p>
-                    <form method="POST" action="/uploadSites">
+                    <form method="POST" action="/uploadSites" enctype="multipart/form-data">
                         <div class="form-group row">
                             <label for="websiteZip" class="col-md-2 col-form-label">Select ZIP:</label>
                             <div class="col-md-10">
-                                <input type="file" class="form-control-file" id="websiteZip" name="websiteZip">
+                                <input type="file" class="form-control-file" id="websiteZip" name="file">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Upload</button>
                             </div>
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    
                 </div>
             </div>
         </div>

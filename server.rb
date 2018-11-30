@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'mysql2'
 require 'csv'
-#require 'sinatra/reloader' if development?
+require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
 require 'zip'
@@ -11,6 +11,8 @@ require 'zip'
 # #NOTE IF TESTING, REPLACE WITH YOUR OWN USER/PASS/INFO
 
 enable :sessions
+
+$pword = "H@ha12345"
 
 get '/' do
   File.read(File.join('index.html'))
@@ -33,7 +35,7 @@ get '/votingResults.html' do
 end
 
 post '/uploadVote' do
-  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
 
   studentId = params[:id]
   first = params[:first]
@@ -78,15 +80,19 @@ post '/uploadVote' do
 end
 
 post '/uploadSites' do
-  tempfile = params[:file][:tempfile]
+  print("Uploading...\n")
+  file = params[:file][:tempfile]
   filename = params[:file][:filename]
-
+  File.open(filename, "wb") do |f|
+    f.write(file.read)
+  end
   Zip::File.open(filename) do |zip_file|
     zip_file.each do |f|
       fpath = File.join("websites\\", f.name)
       zip_file.extract(f, fpath) unless File.exist?(fpath)
     end
   end
+  File.delete(filename)
   "Upload Complete"
 end
 
@@ -111,7 +117,7 @@ end
 
 
 def connect_sql()
-  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
   results = mysql.query("SELECT * FROM userpass")
   results.each do |row|
     print("\n"+(row.to_s))
@@ -132,7 +138,7 @@ end
 
 def create_db()
   #connect to db first
-  db = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
+  db = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
 
   #Read csv for data to fill the dbs
   CSV.foreach("information.csv") do |row|
