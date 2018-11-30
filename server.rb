@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'mysql2'
 require 'csv'
-require 'sinatra/reloader' if development?
+#require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
 require 'zip'
@@ -29,20 +29,36 @@ get '/vote.html' do
 end
 
 post '/uploadVote' do
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
+
   studentId = params[:id]
   first = params[:first]
   second = params[:second]
   third = params[:third]
 
-  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
+  # student has already voted
   if(in_db('votes', 'user', studentId, mysql))
-    # student has already voted
     File.read(File.join('voteRepeat.html'))
   else
-    # insert result into db
-    qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
-    results = mysql.query(qry)
-    print(results)
+  # check values
+  if(in_db('websites', 'user', first, mysql))
+    if(in_db('websites', 'user', second, mysql))
+      if(in_db('websites', 'user', third, mysql))
+        # insert result into db
+        qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
+        results = mysql.query(qry)
+        print(results)
+        File.read(File.join('voteSuccess.html'))
+      else
+        File.read(File.join('voteFail.html'))
+      end
+    else
+      File.read(File.join('voteFail.html'))
+    end
+  else
+    File.read(File.join('voteFail.html'))
+  end
+
   end
 end
 
@@ -61,13 +77,26 @@ end
 
 
 
+post '/uploadCsv' do
+  # https://stackoverflow.com/questions/2521053/how-to-read-a-user-uploaded-file-without-saving-it-to-the-database
+  file_data = params[:classCsv]
+  if file_data.respond_to?(:read)
+    csvdata = file_data.read
+  elsif file_data.respond_to?(:path)
+    csvdata = File.read(file_data.path)
+  else
+    logger.error "Bad file_data: #{file_data.class.name}: #{file_data.inspect}"
+  end
+  #call function to handle csv here with csvdata
+end
+
 not_found do
   '404 NOT FOUND'
 end
 
 
 def connect_sql()
-  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
   results = mysql.query("SELECT * FROM userpass")
   results.each do |row|
     print("\n"+(row.to_s))
@@ -88,7 +117,7 @@ end
 
 def create_db()
   #connect to db first
-  db = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'H@ha12345', :database => 'test')
+  db = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
 
   #Read csv for data to fill the dbs
   CSV.foreach("information.csv") do |row|

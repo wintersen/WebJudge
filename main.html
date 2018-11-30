@@ -34,10 +34,12 @@
 
 
                 <ul id="instructorFeatures">
-                    <li><a data-toggle="modal" data-target="#csvModal">Upload Class</a> - Upload your students and TAs as a CSV file</li>
+                    <li><a data-toggle="modal" data-target="#csvModal">Upload Class</a> - Upload your students and TAs
+                        as a CSV file</li>
                 </ul>
                 <ul id="taFeatures">
-                    <li><a data-toggle="modal" data-target="#zipModal">Upload Websites</a> - Upload a ZIP containing the resources for student websites</li>
+                    <li><a data-toggle="modal" data-target="#zipModal">Upload Websites</a> - Upload a ZIP containing
+                        the resources for student websites</li>
                     <li><a>View Student Voting</a> - View and download the report of voting results</li>
                 </ul>
                 <ul id="generalFeatures">
@@ -63,51 +65,52 @@
                     <p>
                         Upload a CSV containing the population of your class.
                     </p>
-                    <form>
+                    <form action="/uploadCsv" method="POST">
                         <div class="form-group row">
                             <label for="classCsv" class="col-md-2 col-form-label">Select CSV:</label>
                             <div class="col-md-10">
-                                <input type="file" class="form-control-file" id="classCsv">
+                                <input type="file" class="form-control-file" id="classCsv" name="classCsv">
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Upload</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </div>
         </div>
-        <!-- ZIP UPLOAD MODAL -->
-        <div class="modal fade" id="zipModal" tabindex="-1" role="dialog" aria-labelledby="zipModalTitle"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="zipModalTitle">Upload Websites</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Upload a ZIP containing the websites to be judged.
-                        </p>
-                        <form>
-                            <div class="form-group row">
-                                <label for="websiteZip" class="col-md-2 col-form-label">Select ZIP:</label>
-                                <div class="col-md-10">
-                                    <input type="file" class="form-control-file" id="websiteZip">
-                                </div>
+    </div>
+    <!-- ZIP UPLOAD MODAL -->
+    <div class="modal fade" id="zipModal" tabindex="-1" role="dialog" aria-labelledby="zipModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="zipModalTitle">Upload Websites</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Upload a ZIP containing the websites to be judged.
+                    </p>
+                    <form method="POST" action="/uploadSites">
+                        <div class="form-group row">
+                            <label for="websiteZip" class="col-md-2 col-form-label">Select ZIP:</label>
+                            <div class="col-md-10">
+                                <input type="file" class="form-control-file" id="websiteZip" name="websiteZip">
                             </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">Upload</button>
-                    </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </div>
+        </div>
+    </div>
 </body>
 
 </html>
