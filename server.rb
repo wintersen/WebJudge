@@ -28,6 +28,10 @@ get '/vote.html' do
   File.read(File.join('vote.html'))
 end
 
+get '/votingResults.html' do
+  File.read(File.join('votingResults.html'))
+end
+
 post '/uploadVote' do
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => 'vanilla1', :database => 'test')
 
