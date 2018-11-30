@@ -14,15 +14,25 @@ enable :sessions
 
 $pword = "H@ha12345"
 
+register do
+  def check_Instructor(user)
+    condition do
+      print(user)
+      redirect "/" unless false
+    end
+  end
+end
+
+
 get '/' do
   File.read(File.join('index.html'))
 
 end
 
-get '/main.html' do
+get '/main.html', :check_Instructor => :user do
   print 'main'
-  create_db
-  connect_sql
+  #create_db
+  #connect_sql
   File.read(File.join('main.html'))
 end
 
@@ -143,6 +153,7 @@ post "/login" do
 
   #Performing comparison with password
   if hashed_pw == strResult
+
     return "LOGGED IN"
   else
     return "INCORRECT PASSWORD"
@@ -222,5 +233,6 @@ def get_hash(password)
   hashed_pw = Digest::SHA256.hexdigest (password+salt)
   return hashed_pw, salt
 end
+
 
 
