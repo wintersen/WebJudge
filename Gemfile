@@ -1,5 +1,7 @@
 gem 'mysql2'
 gem 'sinatra'
+gem 'zip'
+gem 'rubyzip'
 gem 'dm-core'
 gem 'dm-migrations'
 gem 'sinatra/reloader'

@@ -4,10 +4,13 @@ require 'csv'
 require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
+require 'zip'
 # password to sql marcoserika
 # #mysql 5.7 from official wesite
 # #connection succeeded
 # #NOTE IF TESTING, REPLACE WITH YOUR OWN USER/PASS/INFO
+
+enable :sessions
 
 get '/' do
   File.read(File.join('index.html'))
@@ -42,6 +45,21 @@ post '/uploadVote' do
     print(results)
   end
 end
+
+post '/uploadSites' do
+  tempfile = params[:file][:tempfile]
+  filename = params[:file][:filename]
+
+  Zip::File.open(filename) do |zip_file|
+    zip_file.each do |f|
+      fpath = File.join("websites\\", f.name)
+      zip_file.extract(f, fpath) unless File.exist?(fpath)
+    end
+  end
+  "Upload Complete"
+end
+
+
 
 not_found do
   '404 NOT FOUND'
@@ -97,3 +115,5 @@ def get_hash(password)
   hashed_pw = Digest::SHA256.hexdigest (password+salt)
   return hashed_pw, salt
 end
+
+
