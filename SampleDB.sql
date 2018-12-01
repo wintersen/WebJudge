@@ -5,3 +5,6 @@ create table roles(user varchar(255), role varchar(255));
 create table websites(user varchar(255), site varchar(255));
 create table votes(user varchar(255), vote1 varchar(255), vote2 varchar(255), vote3 varchar(255));
 create table salts(user varchar(255), salt varchar(255));
+INSERT INTO roles (user, role) VALUES ('Bob Jenkins', 'instructor');
+INSERT INTO userpass (user, pass) VALUES ('Bob Jenkins', 'bde7bbdc978fba212e1cbae023341667fd37c302922d9bd01be6914d84a5f374');
+INSERT INTO salts (user, salt) VALUES ('Bob Jenkins', '778cdf81e111bcdeb784a3336d344a02');

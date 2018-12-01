@@ -18,6 +18,7 @@ $pword = "H@ha12345"
 
 
 get '/' do
+  #create_db
   File.read(File.join('index.html'))
 
 end
@@ -109,19 +110,47 @@ end
 
 
 
+
 post '/uploadCsv' do
-  # https://stackoverflow.com/questions/2521053/how-to-read-a-user-uploaded-file-without-saving-it-to-the-database
-  file_data = params[:classCsv]
-  if file_data.respond_to?(:read)
-    csvdata = file_data.read
-  elsif file_data.respond_to?(:path)
-    csvdata = File.read(file_data.path)
-  else
-    logger.error "Bad file_data: #{file_data.class.name}: #{file_data.inspect}"
+  print("Uploading...\n")
+  file = params[:file][:tempfile]
+  print("Success")
+  filename = params[:file][:filename]
+  File.open(filename, "wb") do |f|
+    f.write(file.read)
   end
-  #call function to handle csv here with csvdata
+
+  db = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+
+  #Read csv for data to fill the dbs
+  CSV.foreach(filename) do |row|
+    if in_db("userpass", "user", row[0], db)
+      print("\nCONTINUING\n")
+      next
+    end
+    #updating usernames and passwords table
+    pw, salt = get_hash(row[1])
+    qry = "INSERT INTO userpass (user, pass) VALUES ('" + row[0] + "', '" + pw + "')"
+    results = db.query(qry)
+    print(results)
+
+    #Updating salts
+    qry = "INSERT INTO salts (user, salt) VALUES ('" + row[0] + "', '" + salt + "')"
+    results = db.query(qry)
+    print(results)
+
+    #updating roles table
+    qry = "INSERT INTO roles (user, role) VALUES ('" + row[0] + "', '" + row[2] + "')"
+    results = db.query(qry)
+    print(results)
+  end
+
+  File.delete(filename)
+  "Upload Complete"
 end
 
+
+#defailt is "Bob Jenkins"  "H43kdi3jdlH"
 
 post "/login" do
   #make sure username and password provided

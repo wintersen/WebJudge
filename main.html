@@ -65,18 +65,18 @@
                     <p>
                         Upload a CSV containing the population of your class.
                     </p>
-                    <form action="/uploadCsv" method="POST">
+                    <form action="/uploadCsv" method="POST" enctype="multipart/form-data">
                         <div class="form-group row">
                             <label for="classCsv" class="col-md-2 col-form-label">Select CSV:</label>
                             <div class="col-md-10">
-                                <input type="file" class="form-control-file" id="classCsv" name="classCsv">
+                                <input type="file" class="form-control-file" id="classCsv" name="file">
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </div>
         </div>
