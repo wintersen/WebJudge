@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'mysql2'
 require 'csv'
-#require 'sinatra/reloader' if development?
+require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
 require 'zip'
@@ -12,7 +12,7 @@ require 'zip'
 
 enable :sessions
 
-$pword = "vanilla1"
+$pword = "H@ha12345"
 
 
 
@@ -60,6 +60,12 @@ get '/votingResults.html' do
     @voteResults.push(obj)
   end
   erb :votingResults
+end
+
+get '/logout' do
+  print("Logging out...")
+  session[:id] = nil
+  redirect '/'
 end
 
 post '/uploadVote' do
