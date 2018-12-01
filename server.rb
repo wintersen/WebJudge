@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'mysql2'
 require 'csv'
-require 'sinatra/reloader' if development?
+#require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
 require 'zip'
@@ -12,7 +12,7 @@ require 'zip'
 
 enable :sessions
 
-$pword = "H@ha12345"
+$pword = "vanilla1"
 
 
 

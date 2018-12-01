@@ -49,6 +49,7 @@
                       </table>
 
                     </div>
+              <button type="button" class="btn btn-primary" onclick="downloadCSV()">Download Results CSV</button>
                     <a href="main.html">To main page</a>
             </div>
         </div>
@@ -59,17 +60,34 @@
     
 </body>
 <script>
-    var array = <%= @voteResults %>;
-    var a = array;
-    console.log(a);
+    let array = <%= @voteResults %>;
+    let array2 = <%= @voteResults %>;
     var app = new Vue({
         el: '#app',
         data: { votes: []
         },
         methods: {
-            
+
         }
     })
-    app.votes = array;
+    app.votes = array2;
+
+    // Referencing https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/
+    function downloadCSV(){
+        const rows = array;
+        rows.splice(0,0,["Student","First Pick","Second Pick","Third Pick"]);
+        let csvContent = "data:text/csv;charset=utf-8,";
+        rows.forEach(function(rowArray){
+            let row = rowArray.join(",");
+            csvContent += row + "\r\n";
+        });
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'VotingResults.csv');
+        link.click();
+    }
+    console.log(array);
+
 </script>
 </html>
