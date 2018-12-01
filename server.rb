@@ -12,7 +12,7 @@ require 'zip'
 
 enable :sessions
 
-$pword = "H@ha12345"
+$pword = "vanilla1"
 
 
 
@@ -43,6 +43,11 @@ get '/votingResults.html' do
     redirect "/"
   end
   File.read(File.join('votingResults.html'))
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+  results = mysql.query("SELECT * FROM votes")
+  @voteResults = get_query(results)
+  erb :votingResults
+  #File.read(File.join('votingResults.erb'))
 end
 
 post '/uploadVote' do
@@ -56,37 +61,30 @@ post '/uploadVote' do
   studentId = 'test'
 
   # student has already voted
-  if(in_db('votes', 'user', studentId, mysql))
+  if in_db('votes', 'user', studentId, mysql)
     File.read(File.join('voteRepeat.html'))
   else
   # check values
-  if(in_db('websites', 'user', first, mysql))
-    if(in_db('websites', 'user', second, mysql))
-      if(in_db('websites', 'user', third, mysql))
-        # insert result into db
-        qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
-        results = mysql.query(qry)
-        print(results)
-        File.read(File.join('voteSuccess.html'))
+    if in_db('websites', 'user', first, mysql)
+      if in_db('websites', 'user', second, mysql)
+        if in_db('websites', 'user', third, mysql)
+          # insert result into db
+          qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
+          results = mysql.query(qry)
+          print(results)
+          File.read(File.join('voteSuccess.html'))
+        else
+          print "failed on 3"
+          File.read(File.join('voteFail.html'))
+        end
       else
-        print "failed on 3"
+        print "failed on 2"
         File.read(File.join('voteFail.html'))
       end
     else
-      print "failed on 2"
+      print "failed on 1"
       File.read(File.join('voteFail.html'))
     end
-  else
-    print "failed on 1"
-    #File.read(File.join('voteFail.html'))
-  end
-  # TEST----------
-  # This is just for ensuring it puts into database
-  qry = "INSERT INTO votes (user, vote1, vote2, vote3) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
-  results = mysql.query(qry)
-  print(results)
-  File.read(File.join('voteSuccess.html'))
-    # -----------------
   end
 end
 
@@ -133,7 +131,7 @@ post "/login" do
   end
   #check if username is even in database
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
-  if(!in_db("salts", "user", params[:username], mysql))
+  if !in_db("salts", "user", params[:username], mysql)
     return "USER NOT FOUND"
   end
   session[:id] = params[:username]
