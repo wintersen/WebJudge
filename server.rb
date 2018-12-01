@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'mysql2'
 require 'csv'
-#require 'sinatra/reloader' if development?
+require 'sinatra/reloader' if development?
 require 'digest'
 require 'securerandom'
 require 'zip'
@@ -12,10 +12,7 @@ require 'zip'
 
 enable :sessions
 
-$pword = "vanilla1"
-
-
-
+$pword = ""
 
 get '/' do
   #create_db
@@ -185,10 +182,9 @@ post '/uploadCsv' do
   "Upload Complete"
 end
 
+#default is "Bob Jenkins"  "H43kdi3jdlH"
 
-#defailt is "Bob Jenkins"  "H43kdi3jdlH"
-
-post "/login" do
+post '/login' do
   #make sure username and password provided
   if !(params.has_key?(:username))
     return "NO USERNAME PROVIDED"
@@ -255,14 +251,12 @@ not_found do
   '404 NOT FOUND'
 end
 
-
 def connect_sql()
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
   results = mysql.query("SELECT * FROM userpass")
   results.each do |row|
     print("\n"+(row.to_s))
   end
-
 end
 
 def in_db(table, column, value, connection)
