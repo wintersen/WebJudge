@@ -14,17 +14,7 @@ enable :sessions
 
 $pword = "H@ha12345"
 
-register do
-  def check_Instructor(user)
-    condition do
-      rolequery = "SELECT role from roles WHERE user = \"" + session[:id] + "\";"
-      result = mysql.query(rolequery)
-      roleresult = query_splitter(get_query(result))
-      print(user)
-      redirect "/" unless roleresult == "instructor" or roleresult == "ta"
-    end
-  end
-end
+
 
 
 get '/' do
@@ -32,18 +22,26 @@ get '/' do
 
 end
 
-get '/main.html', :check_Instructor => :user do
-  print 'main'
+get '/main.html' do
+  if !check_session("instructor")
+    redirect "/"
+  end
   create_db
   connect_sql
   File.read(File.join('main.html'))
 end
 
 get '/vote.html' do
+  if !check_session("student")
+    redirect "/"
+  end
   File.read(File.join('vote.html'))
 end
 
 get '/votingResults.html' do
+  if !check_session("instructor")
+    redirect "/"
+  end
   File.read(File.join('votingResults.html'))
 end
 
@@ -138,7 +136,7 @@ post "/login" do
   if(!in_db("salts", "user", params[:username], mysql))
     return "USER NOT FOUND"
   end
-
+  session[:id] = params[:username]
   #Getting Salt
   saltquery = "SELECT salt from salts WHERE user = \"" + params[:username] + "\";"
   results = mysql.query(saltquery)
@@ -248,5 +246,14 @@ def get_hash(password)
   return hashed_pw, salt
 end
 
-
+def check_session(role)
+  if (session[:id].nil?)
+    return false
+  end
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+  rolequery = "SELECT role from roles WHERE user = \"" + session[:id] + "\";"
+  result = mysql.query(rolequery)
+  roleresult = query_splitter(get_query(result))
+  return roleresult == role
+end
 
