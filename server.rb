@@ -42,12 +42,17 @@ get '/votingResults.html' do
   if !check_session("instructor")
     redirect "/"
   end
-  File.read(File.join('votingResults.html'))
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
-  results = mysql.query("SELECT * FROM votes")
-  @voteResults = get_query(results)
+  results = mysql.query("SELECT * FROM votes", :as => :array)
+  @voteResults = Array.new
+  results.each do |row|
+    obj = [row[0], row[1], row[2], row[3]]
+    @voteResults.push(obj)
+  end
+
+  print @voteResults
   erb :votingResults
-  #File.read(File.join('votingResults.erb'))
+
 end
 
 post '/uploadVote' do
@@ -58,7 +63,7 @@ post '/uploadVote' do
   second = params[:second]
   third = params[:third]
 
-  studentId = 'test'
+  studentId = 'test2'
 
   # student has already voted
   if in_db('votes', 'user', studentId, mysql)
@@ -69,7 +74,7 @@ post '/uploadVote' do
       if in_db('websites', 'user', second, mysql)
         if in_db('websites', 'user', third, mysql)
           # insert result into db
-          qry = "INSERT INTO votes (user, vote) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
+          qry = "INSERT INTO votes (user, vote1, vote2, vote3) VALUES ('" + studentId + "', '" + first + "', '" + second + "', '" + third + "')"
           results = mysql.query(qry)
           print(results)
           File.read(File.join('voteSuccess.html'))
