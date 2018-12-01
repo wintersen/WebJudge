@@ -23,6 +23,32 @@ get '/' do
 
 end
 
+post '/register' do
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+  user = params[:username]
+  pass = params[:password]
+
+  if in_db("userpass", "user", user, mysql)
+    return "USERNAME ALREADY REGISTERED"
+  else
+    pw, salt = get_hash(pass)
+    qry = "INSERT INTO userpass (user, pass) VALUES ('" + user + "', '" + pw + "')"
+    results = mysql.query(qry)
+    print(results)
+
+    #Updating salts
+    qry = "INSERT INTO salts (user, salt) VALUES ('" + user + "', '" + salt + "')"
+    results = mysql.query(qry)
+    print(results)
+
+    #updating roles table
+    qry = "INSERT INTO roles (user, role) VALUES ('" + user + "', 'instructor')"
+    results = mysql.query(qry)
+    print(results)
+    File.read(File.join('main.html'))
+  end
+end
+
 get '/main.html' do
   if !check_session("instructor")
     redirect "/"
@@ -120,9 +146,6 @@ post '/uploadSites' do
   File.delete(filename)
   "Upload Complete"
 end
-
-
-
 
 post '/uploadCsv' do
   print("Uploading...\n")
