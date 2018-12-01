@@ -154,8 +154,19 @@ post "/login" do
 
   #Performing comparison with password
   if hashed_pw == strResult
-
-    return "LOGGED IN"
+    rolequery = "SELECT role from roles WHERE user = \"" + params[:username] + "\";"
+    result = mysql.query(rolequery)
+    roleresult = query_splitter(get_query(result))
+    if roleresult == 'instructor'
+      File.read(File.join('main.html'))
+    elsif roleresult == 'ta'
+      File.read(File.join('main-ta.html'))
+    elsif roleresult == 'student'
+      print "is student"
+      File.read(File.join('main-student.html'))
+    else
+      return "Could not find role"
+    end
   else
     return "INCORRECT PASSWORD"
   end
