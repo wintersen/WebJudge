@@ -12,13 +12,16 @@ require 'zip'
 
 enable :sessions
 
-$pword = "vanilla1"
+$pword = "H@ha12345"
 
 register do
   def check_Instructor(user)
     condition do
+      rolequery = "SELECT role from roles WHERE user = \"" + session[:id] + "\";"
+      result = mysql.query(rolequery)
+      roleresult = query_splitter(get_query(result))
       print(user)
-      redirect "/" unless false
+      redirect "/" unless roleresult == "instructor" or roleresult == "ta"
     end
   end
 end
@@ -29,8 +32,7 @@ get '/' do
 
 end
 
-#get '/main.html', :check_Instructor => :user do
-get '/main.html' do
+get '/main.html', :check_Instructor => :user do
   print 'main'
   create_db
   connect_sql
