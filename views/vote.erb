@@ -33,11 +33,11 @@
                     <div class="container" id="studentSites">
                         <template v-for="site in sites">
                             <div class="row mb-1">
-                                <div class="col">{{site.id}}</div>
-                                <div class="col"><a v-bind:href="site.websiteLink" target="_blank">View Site</a></div>
-                                <div class="col"><button class="btn" v-on:click="setVote('1',site.id)">Vote #1</button></div>
-                                <div class="col"><button class="btn" v-on:click="setVote('2',site.id)">Vote #2</button></div>
-                                <div class="col"><button class="btn" v-on:click="setVote('3',site.id)">Vote #3</button></div>
+                                <div class="col">{{site[0]}}</div>
+                                <div class="col"><a v-bind:href="site[1]" target="_blank">View Site</a></div>
+                                <div class="col"><button class="btn" v-on:click="setVote('1',site[0])">Vote #1</button></div>
+                                <div class="col"><button class="btn" v-on:click="setVote('2',site[0])">Vote #2</button></div>
+                                <div class="col"><button class="btn" v-on:click="setVote('3',site[0])">Vote #3</button></div>
                             </div>
                         </template>
                     </div>
@@ -76,12 +76,11 @@
 
 </body>
 <script>
+    var array = <%= @websites %>;
     var app = new Vue({
         el: '#app',
         data: {
-            sites: [{ id: 'sdfdsds', websiteLink: 'google.com' },
-            { id: 'asad', websiteLink: 'google.com' },
-            { id: 'fsdf', websiteLink: 'google.com' }],
+            sites: [],
             first: '',
             second: '',
             third: ''
@@ -102,6 +101,7 @@
             }
         }
     })
+    app.sites = array;
 </script>
 
 </html>

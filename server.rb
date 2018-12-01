@@ -36,7 +36,16 @@ get '/vote.html' do
   if !check_session("student")
     redirect "/"
   end
-  File.read(File.join('vote.html'))
+  @websites = Array.new
+  mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
+  results = mysql.query("SELECT * FROM websites", :as => :array)
+  @websites = Array.new
+  results.each do |row|
+    obj = [row[0], row[1]]
+    @websites.push(obj)
+  end
+  print @websites
+  erb :vote
 end
 
 get '/votingResults.html' do
@@ -50,21 +59,16 @@ get '/votingResults.html' do
     obj = [row[0], row[1], row[2], row[3]]
     @voteResults.push(obj)
   end
-
-  print @voteResults
   erb :votingResults
-
 end
 
 post '/uploadVote' do
   mysql = Mysql2::Client.new(:host => 'localhost', :username => 'root', :password => $pword, :database => 'test')
 
-  studentId = params[:id]
+  studentId = session[:id]
   first = params[:first]
   second = params[:second]
   third = params[:third]
-
-  studentId = 'test2'
 
   # student has already voted
   if in_db('votes', 'user', studentId, mysql)
