@@ -28,7 +28,6 @@
         <div class="row mt-5">
             <div class="col-md-8 offset-md-2">
                 <h1>Voting</h1>
-                <a href="main.html">To main page</a>
                 <div id="app">
                     <div class="container" id="studentSites">
                         <template v-for="site in sites">
@@ -101,7 +100,7 @@
             }
         }
     })
-    app.sites = array;
+    app.sites = array.sort(()=> Math.random() - 0.5);
 </script>
 
 </html>
